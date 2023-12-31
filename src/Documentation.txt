@@ -39,8 +39,7 @@ Classes:
                 to get the CPU.
 
             9. private int turnaround
-               - Description: The turnaround time of the process. The amount of time it takes for a process to complete
-               from the moment it arrived.
+               - Description: The turnaround time of the process. 
 
             10. private boolean finished = false
                 - Description: A flag indicating whether the process has finished execution.
