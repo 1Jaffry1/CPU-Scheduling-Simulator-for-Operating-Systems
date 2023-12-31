@@ -1,0 +1,51 @@
+Operating Systems Final Project -- scheduling algorithms
+    Student: Sayyed Muhammad Jaffry : 220700016
+
+Classes:
+
+    Main.java {
+        This is the controller class, it is the class that contains the "main" method. The
+        functions related to each algorithm are called in order in this class.
+    }
+
+    Process.java {
+        This class holds the attributes and methods for a process that has been passed to the
+        operating system. It contains the following attributes:
+
+            1. public static ArrayList<Process> allProcesses
+               - Description: A static ArrayList that stores each process that is added.
+
+            2. private String name
+               - Description: The name (ID) of the process.
+
+            3. public int[] attrs
+               - Description: An array holding the attributes based on which different algorithms
+                 would want to sort the processes. The attributes are (arrivalTime, priority, remainingBurstTime).
+
+            4. private int arrivalTime
+               - Description: The arrival time of the process.
+
+            5. private int priority
+               - Description: The priority of the process. Lower number indicates higher priority.
+
+            6. private int burst
+               - Description: The burst time of the process.
+
+            7. private int response
+               - Description: The response time of the process. i.e when the CPU is first given to the process.
+
+            8. private int waiting
+               - Description: The waiting time of the process. The total time the process spends waiting in the queue
+                to get the CPU.
+
+            9. private int turnaround
+               - Description: The turnaround time of the process. The amount of time it takes for a process to complete
+               from the moment it arrived.
+
+            10. private boolean finished = false
+                - Description: A flag indicating whether the process has finished execution.
+
+            11. private int remainingBurstTime = burst
+                - Description: The remaining burst time of the process. Initialized to the initial burst time
+                  and updated during execution.
+    }
