@@ -1,6 +1,3 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Alg {
@@ -43,7 +40,7 @@ public class Alg {
         float averageTurnaroundTime = averageTurnAroundTimeTempSum / array.size();
         float averageResponseTime = averageResponseTimeTempSum / array.size();
 
-        printToFile("FCFS",
+        IO.writeToFile("FCFS",
                 "Throughput: " + throughput + "\n"
                         + "CPU Utilization: " + util + "%\n"
                         + "Average Waiting Time: " + averageWaitingTime + "\n"
@@ -53,14 +50,4 @@ public class Alg {
         Process.reset();
     }
 
-    public static void printToFile(String AlgNameForFile, String n) {
-        String FileName = AlgNameForFile + ".txt";
-        new File(FileName);
-        try {
-            FileWriter writer = new FileWriter(FileName);
-            writer.write(n);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
