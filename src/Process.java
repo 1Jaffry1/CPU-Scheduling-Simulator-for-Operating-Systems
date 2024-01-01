@@ -2,23 +2,27 @@ import java.util.ArrayList;
 
 public class Process {
     public static ArrayList<Process> allProcesses = new ArrayList<>();
-    private String name;
     public int[] attrs;
+    private String name;
     private int arrivalTime;
     private int Priority;
     private int burst;
     private int response;
     private int waiting;
     private int turnaround;
+    private int startTime;
+    private int finishTime;
     private boolean finished = false;
     private int remainingBurstTime = burst;
 
-    public int getRemainingBurstTime() {
-        return remainingBurstTime;
-    }
 
-    public void setRemainingBurstTime(int remainingBurstTime) {
-        this.remainingBurstTime = remainingBurstTime;
+    public Process(String name, int arrival_time, int priority, int burst) {
+        this.name = name;
+        this.arrivalTime = arrival_time;
+        Priority = priority;
+        this.burst = burst;
+        this.attrs = new int[]{this.arrivalTime, this.Priority, this.remainingBurstTime};
+        allProcesses.add(this);
     }
 
     public static void reset() {
@@ -29,27 +33,33 @@ public class Process {
         }
     }
 
-    @Override
-    public String toString() {
-        return "Process{" +
-                "name='" + name + '\'' +
-                ", finished=" + finished +
-                ", arrival_time=" + arrivalTime +
-                ", Priority=" + Priority +
-                ", burst=" + burst +
-                ", waiting=" + waiting +
-                ", response=" + response +
-                ", turnaround=" + turnaround +
-                '}';
+    public int getFinishTime() {
+        return finishTime;
     }
 
-    public Process(String name, int arrival_time, int priority, int burst) {
-        this.name = name;
-        this.arrivalTime = arrival_time;
-        Priority = priority;
-        this.burst = burst;
-        this.attrs = new int[]{this.arrivalTime, this.Priority, this.remainingBurstTime};
-        allProcesses.add(this);
+    public void setFinishTime(int finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    public int getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(int startTime) {
+        this.startTime = startTime;
+    }
+
+    public int getRemainingBurstTime() {
+        return remainingBurstTime;
+    }
+
+    public void setRemainingBurstTime(int remainingBurstTime) {
+        this.remainingBurstTime = remainingBurstTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Process{" + "name='" + name + '\'' + ", response=" + response + ", waiting=" + waiting + ", turnaround=" + turnaround + ", arrival_time=" + arrivalTime + ", burst=" + burst + ", Priority=" + Priority + ", finished=" + finished + '}';
     }
 
     public String getName() {
