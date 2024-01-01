@@ -1,0 +1,11 @@
+Throughput: 0.05952381
+CPU Utilization: 100.0%
+Average Waiting Time: 34.8
+Average Turnaround Time: 51.6
+Average Response Time: 34.8
+
+[P2] [0] [14]
+[P1] [14] [34]
+[P3] [34] [59]
+[P4] [59] [74]
+[P5] [74] [84]
