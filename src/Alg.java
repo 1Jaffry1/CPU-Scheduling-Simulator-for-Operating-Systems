@@ -17,7 +17,6 @@ public class Alg {
         sortBy(1);
         sortBy(0);
         int time = 0;
-        float throughput = (float) array.size() / time;
         float util = 100;
         float averageWaitingTimeTempSum = 0;
         float averageTurnAroundTimeTempSum = 0;
@@ -30,12 +29,13 @@ public class Alg {
             i.setRemainingBurstTime(0);
             i.setFinished(true);
             time = time + i.getBurst();
-            toPrint.append("[").append(i.getName()).append("] [").append(i.getStartTime()).append("]" +
-                    " [").append(i.getStartTime()).append(i.getBurst()).append("]\n");
+            i.setFinishTime(time);
+            toPrint.append("[").append(i.getName()).append("] [").append(i.getStartTime()).append("] [").append(i.getFinishTime()).append("]\n");
             averageWaitingTimeTempSum += i.getWaiting();
             averageTurnAroundTimeTempSum += i.getTurnaround();
             averageResponseTimeTempSum += i.getResponse();
         }
+        float throughput = (float) array.size() / time;
         float averageWaitingTime = averageWaitingTimeTempSum / array.size();
         float averageTurnaroundTime = averageTurnAroundTimeTempSum / array.size();
         float averageResponseTime = averageResponseTimeTempSum / array.size();
