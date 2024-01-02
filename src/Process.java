@@ -13,14 +13,14 @@ public class Process {
     private int startTime;
     private int finishTime;
     private boolean finished = false;
-    private int remainingBurstTime = burst;
+    private int remainingBurstTime;
 
 
     public Process(String name, int arrival_time, int priority, int burst) {
         this.name = name;
         this.arrivalTime = arrival_time;
         Priority = priority;
-        this.burst = burst;
+        this.burst = this.remainingBurstTime = burst;
         this.attrs = new int[]{this.arrivalTime, this.Priority, this.remainingBurstTime};
         allProcesses.add(this);
     }
@@ -59,7 +59,14 @@ public class Process {
 
     @Override
     public String toString() {
-        return "Process{" + "name='" + name + '\'' + ", response=" + response + ", waiting=" + waiting + ", turnaround=" + turnaround + ", arrival_time=" + arrivalTime + ", burst=" + burst + ", Priority=" + Priority + ", finished=" + finished + '}';
+        return "Process{" +
+                "name='" + name + '\'' +
+                ", arrivalTime=" + arrivalTime +
+                ", Priority=" + Priority +
+                ", burst=" + burst +
+                ", finished=" + finished +
+                ", remainingBurstTime=" + remainingBurstTime +
+                '}';
     }
 
     public String getName() {
@@ -90,16 +97,8 @@ public class Process {
         return Priority;
     }
 
-    public void setPriority(int priority) {
-        Priority = priority;
-    }
-
     public int getBurst() {
         return burst;
-    }
-
-    public void setBurst(int burst) {
-        this.burst = burst;
     }
 
     public int getWaiting() {
