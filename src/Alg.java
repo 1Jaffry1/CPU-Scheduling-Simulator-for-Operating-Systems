@@ -187,7 +187,7 @@ public class Alg {
     }
 
 
-    public static void PriorityScheduling(ArrayList<Process> array) {
+    public static void priorityScheduling(ArrayList<Process> array) {
         StringBuilder toPrint = new StringBuilder();
         Methods.sortBy("remaining", array);
         Methods.sortBy("priority", array);
@@ -243,7 +243,7 @@ public class Alg {
     }
 
 
-    public static void PreemtivePriority(ArrayList<Process> array) {
+    public static void preemtivePriority(ArrayList<Process> array) {
         StringBuilder toPrint = new StringBuilder();
         StringBuilder toPrint2 = new StringBuilder();
         Methods.sortBy("remaining", array);
@@ -272,7 +272,7 @@ public class Alg {
                 if (current.getRemainingBurstTime() < 1) { //if Process is finished, do the neccesary checks
                     current.setFinished(true);
                     current.setRemainingBurstTime(0);
-                    current.setTurnaround(time+ 1 - current.getArrivalTime());
+                    current.setTurnaround(time + 1 - current.getArrivalTime());
                     current.setWaiting(current.getTurnaround() - current.getBurst());
                     current.setFinishTime(time);
                     finished++;
@@ -332,7 +332,69 @@ public class Alg {
 
     }
 
+
+    public static void roundRobin(ArrayList<Process> array, int quantum) {
+        Methods.sortBy("arrival", array);
+        ArrayList<Process> complete = new ArrayList<>();
+        ArrayList<Process> ready = new ArrayList<>();
+        Integer time = 0;
+        int finished = 0;
+        int arrayIndex = 0;
+        int circleIndex = 0;
+
+        while (finished < array.size()) {
+            if (!ready.isEmpty()) {
+                Process current = ready.get(circleIndex++ % ready.size());
+                if (current.getResponse() == -1) {
+                    current.setResponse(time - current.getArrivalTime());
+                    current.setStartTime(time);
+                }
+                current.setRemainingBurstTime(current.getRemainingBurstTime() - quantum);
+
+                if (current.getRemainingBurstTime() < 1) {
+                    if (current.times.contains(time))  //for adding time of turn start
+                        current.times.remove(current.times.size() - 1);
+                    else
+                        current.times.add(time);//checks if process has ended
+                    time += quantum + current.getRemainingBurstTime();
+                    current.setFinished(true);
+                    current.setFinishTime(time);
+                    current.setTurnaround(time - current.getArrivalTime());
+                    current.setWaiting(current.getTurnaround() - current.getResponse());
+                    finished++;
+                    complete.add(current);
+                    ready.remove(current);
+                    current.setRemainingBurstTime(0);
+
+                } else time += quantum;
+
+                if (!current.isFinished())
+                    if (current.times.contains(time - quantum))  //for adding time of turn start
+                        current.times.remove(current.times.size() - 1);
+                    else
+                        current.times.add(time - quantum);
+                current.times.add(time); //adds time of turn end
+            }
+            if (arrayIndex < array.size()) //stop looking if all processes have been added. index reaching the end when wrong time breaks -> all processes added
+                while (array.get(arrayIndex).getArrivalTime() <= time) {
+                    ready.add(array.get(arrayIndex));
+                    arrayIndex++;
+                    if (arrayIndex == array.size()) break;
+                }
+            if (arrayIndex < array.size() && ready.isEmpty()) {
+                time = array.get(arrayIndex).getArrivalTime();
+            }
+        }
+        for (Process i: complete){
+            System.out.print("\n"+i.getName()+" ");
+                    for (int j=0;j<i.times.size();j+=2)
+                        System.out.print(i.times.get(j)+ ":" + i.times.get(j+1)+" ");
+        }
+    }
+
 }
+
+
 
 
 
