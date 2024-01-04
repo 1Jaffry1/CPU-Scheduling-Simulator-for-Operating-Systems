@@ -3,10 +3,11 @@ import java.util.ArrayList;
 public class Process {
     public static ArrayList<Process> allProcesses = new ArrayList<>();
     public int[] attrs;
+    public ArrayList<Integer> times = new ArrayList<>();
     private String name;
     private int arrivalTime;
-    private int Priority;
-    private int burst;
+    private final int Priority;
+    private final int burst;
     private int response;
     private int waiting;
     private int turnaround;
@@ -14,9 +15,6 @@ public class Process {
     private int finishTime;
     private boolean finished = false;
     private int remainingBurstTime;
-    public ArrayList<Integer> startTimes = new ArrayList<>();
-    public ArrayList<Integer> endTimes = new ArrayList<>();
-
 
     public Process(String name, int arrival_time, int priority, int burst) {
         this.name = name;
@@ -32,10 +30,12 @@ public class Process {
             i.turnaround = i.waiting = i.response = -1;
             i.finished = false;
             i.remainingBurstTime = i.burst;
-            i.startTimes = new ArrayList<>();
-            i.endTimes = new ArrayList<>();
+            i.times = new ArrayList<>();
+
         }
     }
+
+
 
     public int getFinishTime() {
         return finishTime;
@@ -63,14 +63,7 @@ public class Process {
 
     @Override
     public String toString() {
-        return "Process{" +
-                "name='" + name + '\'' +
-                ", arrivalTime=" + arrivalTime +
-                ", Priority=" + Priority +
-                ", burst=" + burst +
-                ", finished=" + finished +
-                ", remainingBurstTime=" + remainingBurstTime +
-                '}';
+        return "Process{" + "name='" + name + '\'' + ", arrivalTime=" + arrivalTime + ", Priority=" + Priority + ", burst=" + burst + ", finished=" + finished + ", remainingBurstTime=" + remainingBurstTime + '}';
     }
 
     public String getName() {
@@ -108,6 +101,7 @@ public class Process {
     public int getWaiting() {
         return waiting;
     }
+
 
     public void setWaiting(int waiting) {
         this.waiting = waiting;
