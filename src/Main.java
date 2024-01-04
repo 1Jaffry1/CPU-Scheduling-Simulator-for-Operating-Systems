@@ -6,5 +6,8 @@ public class Main {
         Methods.IO.readFromFile("src/list.txt");
         Alg.fcfs(Process.allProcesses);
         Alg.sjf(Process.allProcesses);
+//        Alg.srjf(Process.allProcesses);
+        Alg.SRJF(Process.allProcesses);
     }
+
 }
