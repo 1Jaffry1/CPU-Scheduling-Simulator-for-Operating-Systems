@@ -239,12 +239,13 @@ public class Alg {
         float averageTurnaroundTime = totalTurnAroundTime / array.size();
         float averageResponseTime = totalResponseTime / array.size();
         Methods.IO.writeToFile("Priority", "Throughput: " + throughput + "\n" + "CPU Utilization: " + util + "%\n" + "Average Waiting Time: " + averageWaitingTime + "\n" + "Average Turnaround Time: " + averageTurnaroundTime + "\n" + "Average Response Time: " + averageResponseTime + "\n\n" + toPrint);
-
+        Process.reset();
     }
 
 
     public static void PreemtivePriority(ArrayList<Process> array) {
         StringBuilder toPrint = new StringBuilder();
+        StringBuilder toPrint2 = new StringBuilder();
         Methods.sortBy("remaining", array);
         Methods.sortBy("priority", array);
         Methods.sortBy("arrival", array);
@@ -261,28 +262,37 @@ public class Alg {
         while (finished < array.size()) {
             if (!ready.isEmpty()) {
                 Process current = ready.peek();
+
+                if (current.getResponse() == -1) {
+                    current.setResponse(time - current.getArrivalTime());
+                    current.setStartTime(time);
+                }
                 current.setRemainingBurstTime(current.getRemainingBurstTime() - 1);
 
                 if (current.getRemainingBurstTime() < 1) { //if Process is finished, do the neccesary checks
                     current.setFinished(true);
                     current.setRemainingBurstTime(0);
-                    current.setTurnaround(time - current.getArrivalTime());
+                    current.setTurnaround(time+ 1 - current.getArrivalTime());
                     current.setWaiting(current.getTurnaround() - current.getBurst());
                     current.setFinishTime(time);
                     finished++;
-                    ready.remove(current);
-                    completed.add(current);
                     totalBurstTime += current.getBurst();
                     totalWaitingTime += current.getWaiting();
                     totalResponseTime += current.getResponse();
                     totalTurnAroundTime += current.getTurnaround();
+                    ready.remove(current);
+                    completed.add(current);
                 }
 
-                if (current.times.contains(time)) current.times.remove(time);
-                else current.times.add(time);
-                current.times.add(time + 1);
+                if (current.times.contains(time))
+                    current.times.remove(time);
+                else
+                    current.times.add(time);
 
+                current.times.add(time + 1);
+                time++;
             }
+
 
             if (arrayIndex < array.size()) //stop looking if all processes have been added. index reaching the end when wrong time breaks -> all processes added
                 while (array.get(arrayIndex).getArrivalTime() <= time) {
@@ -293,15 +303,35 @@ public class Alg {
             if (arrayIndex < array.size() && ready.isEmpty()) {
                 time = array.get(arrayIndex).getArrivalTime();
             }
+        }
 
-            float throughput = (float) array.size() / time;
-            float util = totalBurstTime / time * 100;
-            float averageWaitingTime = totalWaitingTime / array.size();
-            float averageTurnaroundTime = totalTurnAroundTime / array.size();
-            float averageResponseTime = totalResponseTime / array.size();
+        float throughput = (float) array.size() / time;
+        float util = totalBurstTime / time * 100;
+        float averageWaitingTime = totalWaitingTime / array.size();
+        float averageTurnaroundTime = totalTurnAroundTime / array.size();
+        float averageResponseTime = totalResponseTime / array.size();
+        String printer = "";
+        String printer2 = "";
+        for (Process i : completed) {
+            toPrint = new StringBuilder();
+            toPrint2 = new StringBuilder();
+            toPrint.append(i.getName());
+            toPrint2.append(i.getName());
+            for (int timeIndex = 0; timeIndex < i.times.size() - 1; ) {
+                toPrint.append(", ").append(i.times.get(timeIndex)).append(", ").append(i.times.get(timeIndex + 1));
+                toPrint2.append(", ").append(i.times.get(timeIndex)).append(":").append(i.times.get(timeIndex + 1));
+                timeIndex += 2;
+            }
+            printer += toPrint + "\n";
+            printer2 += toPrint2 + "\n";
 
         }
+        Methods.IO.writeToFile("PreemtivePriority", "Throughput: " + throughput + "\n" + "CPU Utilization: " + util + "%\n" + "Average Waiting Time: " + averageWaitingTime + "\n" + "Average Turnaround Time: " + averageTurnaroundTime + "\n" + "Average Response Time: " + averageResponseTime + "\n\n" + printer);
+        Methods.IO.writeToFile("PreemtivePriority_2", "Throughput: " + throughput + "\n" + "CPU Utilization: " + util + "%\n" + "Average Waiting Time: " + averageWaitingTime + "\n" + "Average Turnaround Time: " + averageTurnaroundTime + "\n" + "Average Response Time: " + averageResponseTime + "\n\n" + printer2);
+        Process.reset();
+
     }
+
 }
 
 
