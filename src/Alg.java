@@ -109,7 +109,7 @@ public class Alg {
         PriorityQueue<Process> ready = new PriorityQueue<>(Comparator.comparingInt(Process::getRemainingBurstTime));
         ArrayList<Process> completed = new ArrayList<>();
 
-        float totalBurstTime=0;
+        float totalBurstTime = 0;
         float totalWaitingTime = 0;
         float totalResponseTime = 0;
         float totalTurnAroundTime = 0;
@@ -142,12 +142,13 @@ public class Alg {
                     completed.add(i);
                     ready.remove(i);
                     finished++;
-                    totalBurstTime+=i.getBurst();
+                    totalBurstTime += i.getBurst();
                     totalResponseTime += i.getResponse();
                     totalWaitingTime += i.getWaiting();
                     totalTurnAroundTime += i.getTurnaround();
 
-                } time++;
+                }
+                time++;
             }
             if (arrayIndex < array.size()) //stop looking if all processes have been added. index reaching the end when wrong time breaks -> all processes added
                 while (array.get(arrayIndex).getArrivalTime() <= time) {
@@ -158,33 +159,94 @@ public class Alg {
             if (arrayIndex < array.size() && ready.isEmpty()) {
                 time = array.get(arrayIndex).getArrivalTime();
             }
-        } float throughput = (float) array.size() / time;
+        }
+        float throughput = (float) array.size() / time;
         float util = totalBurstTime / time * 100;
         float averageWaitingTime = totalWaitingTime / array.size();
         float averageTurnaroundTime = totalTurnAroundTime / array.size();
         float averageResponseTime = totalResponseTime / array.size();
-String printer = "";
-String printer2 = "";
+        String printer = "";
+        String printer2 = "";
         for (Process i : completed) {
             toPrint = new StringBuilder();
             toPrint2 = new StringBuilder();
             toPrint.append(i.getName());
             toPrint2.append(i.getName());
             for (int timeIndex = 0; timeIndex < i.times.size() - 1; ) {
-                toPrint.append(", ").append(i.times.get(timeIndex)).append(", ").append(i.times.get(timeIndex+1));
-                toPrint2.append(", ").append(i.times.get(timeIndex)).append(":").append(i.times.get(timeIndex+1));
-                timeIndex+=2;
+                toPrint.append(", ").append(i.times.get(timeIndex)).append(", ").append(i.times.get(timeIndex + 1));
+                toPrint2.append(", ").append(i.times.get(timeIndex)).append(":").append(i.times.get(timeIndex + 1));
+                timeIndex += 2;
             }
-            printer+=toPrint+"\n";
-            printer2+=toPrint2+"\n";
+            printer += toPrint + "\n";
+            printer2 += toPrint2 + "\n";
 
         }
-            Methods.IO.writeToFile("SRJF", "Throughput: " + throughput + "\n" + "CPU Utilization: " + util + "%\n" + "Average Waiting Time: " + averageWaitingTime + "\n" + "Average Turnaround Time: " + averageTurnaroundTime + "\n" + "Average Response Time: " + averageResponseTime + "\n\n" + printer);
-            Methods.IO.writeToFile("SRJF_2", "Throughput: " + throughput + "\n" + "CPU Utilization: " + util + "%\n" + "Average Waiting Time: " + averageWaitingTime + "\n" + "Average Turnaround Time: " + averageTurnaroundTime + "\n" + "Average Response Time: " + averageResponseTime + "\n\n" + printer2);
+        Methods.IO.writeToFile("SRJF", "Throughput: " + throughput + "\n" + "CPU Utilization: " + util + "%\n" + "Average Waiting Time: " + averageWaitingTime + "\n" + "Average Turnaround Time: " + averageTurnaroundTime + "\n" + "Average Response Time: " + averageResponseTime + "\n\n" + printer);
+        Methods.IO.writeToFile("SRJF_2", "Throughput: " + throughput + "\n" + "CPU Utilization: " + util + "%\n" + "Average Waiting Time: " + averageWaitingTime + "\n" + "Average Turnaround Time: " + averageTurnaroundTime + "\n" + "Average Response Time: " + averageResponseTime + "\n\n" + printer2);
+        Process.reset();
     }
 
 
+    public static void PriorityScheduling(ArrayList<Process> array) {
+        StringBuilder toPrint = new StringBuilder();
+        Methods.sortBy("remaining", array);
+        Methods.sortBy("priority", array);
+        Methods.sortBy("arrival", array);
+        float totalBurstTime = 0;
+        float totalResponseTime = 0;
+        float totalWaitingTime = 0;
+        float totalTurnAroundTime = 0;
+        PriorityQueue<Process> ready = new PriorityQueue<>(Comparator.comparingInt(Process::getPriority).thenComparing(Process::getBurst));
+        ArrayList<Process> completed = new ArrayList<>();
+        int time = 0;
+        int finished = 0;
+        int arrayIndex = 0;
+
+
+        while (finished < array.size()) {
+            if (!ready.isEmpty()) {//executes procces with top priority
+                Process currentProcess = ready.poll();
+                currentProcess.setStartTime(time);
+                currentProcess.setResponse(time - currentProcess.getArrivalTime());
+                currentProcess.setWaiting(currentProcess.getResponse());
+                time += currentProcess.getBurst();
+                currentProcess.setFinishTime(time);
+                currentProcess.setFinished(true);
+                currentProcess.setTurnaround(time - currentProcess.getArrivalTime());
+                currentProcess.setRemainingBurstTime(0);
+                toPrint.append(currentProcess.getName()).append(", ").append(currentProcess.getStartTime()).append(", ").append(currentProcess.getFinishTime()).append("\n");
+                finished++;
+                totalBurstTime += currentProcess.getBurst();
+                totalResponseTime += currentProcess.getResponse();
+                totalWaitingTime += currentProcess.getWaiting();
+                totalTurnAroundTime += currentProcess.getTurnaround();
+                completed.add(currentProcess);
+            } //end of execution
+
+            if (arrayIndex < array.size()) //stop looking if all processes have been added. index reaching the end when wrong time breaks -> all processes added
+                while (array.get(arrayIndex).getArrivalTime() <= time) {
+                    ready.add(array.get(arrayIndex));
+                    arrayIndex++;
+                    if (arrayIndex == array.size()) break;
+                }
+            if (arrayIndex < array.size() && ready.isEmpty()) { //jump the time to next arrival time
+                time = array.get(arrayIndex).getArrivalTime();
+            }
+        }
+        float throughput = (float) array.size() / time;
+        float util = totalBurstTime / time * 100;
+        float averageWaitingTime = totalWaitingTime / array.size();
+        float averageTurnaroundTime = totalTurnAroundTime / array.size();
+        float averageResponseTime = totalResponseTime / array.size();
+        Methods.IO.writeToFile("Priority" ,"Throughput: " + throughput + "\n" + "CPU Utilization: " + util + "%\n" + "Average Waiting Time: " + averageWaitingTime + "\n" + "Average Turnaround Time: " + averageTurnaroundTime + "\n" + "Average Response Time: " + averageResponseTime + "\n\n" + toPrint);
+
+    }
+
+
+
 }
+
+
 
 
 
