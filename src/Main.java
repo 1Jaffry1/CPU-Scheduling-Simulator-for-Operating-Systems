@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.util.prefs.PreferenceChangeEvent;
 
 
 public class Main {
@@ -8,6 +9,8 @@ public class Main {
         Alg.sjf(Process.allProcesses);
 //        Alg.srjf(Process.allProcesses);
         Alg.SRJF(Process.allProcesses);
+        Alg.PriorityScheduling(Process.allProcesses);
+        Alg.PreemtivePriority(Process.allProcesses);
     }
 
 }
