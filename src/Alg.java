@@ -238,13 +238,72 @@ public class Alg {
         float averageWaitingTime = totalWaitingTime / array.size();
         float averageTurnaroundTime = totalTurnAroundTime / array.size();
         float averageResponseTime = totalResponseTime / array.size();
-        Methods.IO.writeToFile("Priority" ,"Throughput: " + throughput + "\n" + "CPU Utilization: " + util + "%\n" + "Average Waiting Time: " + averageWaitingTime + "\n" + "Average Turnaround Time: " + averageTurnaroundTime + "\n" + "Average Response Time: " + averageResponseTime + "\n\n" + toPrint);
+        Methods.IO.writeToFile("Priority", "Throughput: " + throughput + "\n" + "CPU Utilization: " + util + "%\n" + "Average Waiting Time: " + averageWaitingTime + "\n" + "Average Turnaround Time: " + averageTurnaroundTime + "\n" + "Average Response Time: " + averageResponseTime + "\n\n" + toPrint);
 
     }
 
 
+    public static void PreemtivePriority(ArrayList<Process> array) {
+        StringBuilder toPrint = new StringBuilder();
+        Methods.sortBy("remaining", array);
+        Methods.sortBy("priority", array);
+        Methods.sortBy("arrival", array);
+        float totalBurstTime = 0;
+        float totalResponseTime = 0;
+        float totalWaitingTime = 0;
+        float totalTurnAroundTime = 0;
+        PriorityQueue<Process> ready = new PriorityQueue<>(Comparator.comparingInt(Process::getPriority).thenComparing(Process::getBurst));
+        ArrayList<Process> completed = new ArrayList<>();
+        Integer time = 0;
+        int finished = 0;
+        int arrayIndex = 0;
 
+        while (finished < array.size()) {
+            if (!ready.isEmpty()) {
+                Process current = ready.peek();
+                current.setRemainingBurstTime(current.getRemainingBurstTime() - 1);
+
+                if (current.getRemainingBurstTime() < 1) { //if Process is finished, do the neccesary checks
+                    current.setFinished(true);
+                    current.setRemainingBurstTime(0);
+                    current.setTurnaround(time - current.getArrivalTime());
+                    current.setWaiting(current.getTurnaround() - current.getBurst());
+                    current.setFinishTime(time);
+                    finished++;
+                    ready.remove(current);
+                    completed.add(current);
+                    totalBurstTime += current.getBurst();
+                    totalWaitingTime += current.getWaiting();
+                    totalResponseTime += current.getResponse();
+                    totalTurnAroundTime += current.getTurnaround();
+                }
+
+                if (current.times.contains(time)) current.times.remove(time);
+                else current.times.add(time);
+                current.times.add(time + 1);
+
+            }
+
+            if (arrayIndex < array.size()) //stop looking if all processes have been added. index reaching the end when wrong time breaks -> all processes added
+                while (array.get(arrayIndex).getArrivalTime() <= time) {
+                    ready.add(array.get(arrayIndex));
+                    arrayIndex++;
+                    if (arrayIndex == array.size()) break;
+                }
+            if (arrayIndex < array.size() && ready.isEmpty()) {
+                time = array.get(arrayIndex).getArrivalTime();
+            }
+
+            float throughput = (float) array.size() / time;
+            float util = totalBurstTime / time * 100;
+            float averageWaitingTime = totalWaitingTime / array.size();
+            float averageTurnaroundTime = totalTurnAroundTime / array.size();
+            float averageResponseTime = totalResponseTime / array.size();
+
+        }
+    }
 }
+
 
 
 
