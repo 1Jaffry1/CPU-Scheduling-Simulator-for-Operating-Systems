@@ -2,8 +2,8 @@ import java.util.ArrayList;
 
 public class Process {
     public static ArrayList<Process> allProcesses = new ArrayList<>();
-    public int[] attrs;
     public ArrayList<Integer> times = new ArrayList<>();
+    public int[] attrs;
     private String name;
     private int arrivalTime;
     private final int Priority;
@@ -61,10 +61,6 @@ public class Process {
         this.remainingBurstTime = remainingBurstTime;
     }
 
-    @Override
-    public String toString() {
-        return "Process{" + "name='" + name + '\'' + ", arrivalTime=" + arrivalTime + ", Priority=" + Priority + ", burst=" + burst + ", finished=" + finished + ", remainingBurstTime=" + remainingBurstTime + '}';
-    }
 
     public String getName() {
         return name;

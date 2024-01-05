@@ -39,6 +39,7 @@ public class Alg {
         Process.reset();
     }
 
+
     public static void sjf(ArrayList<Process> array) {
         int minArrivalTime = array.get(0).getArrivalTime();
         Methods.sortBy("priority", array);
