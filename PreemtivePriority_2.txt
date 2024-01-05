@@ -1,0 +1,11 @@
+Throughput: 0.05102041
+CPU Utilization: 92.85714%
+Average Waiting Time: 15.4
+Average Turnaround Time: 33.6
+Average Response Time: 11.0
+
+B, 0:7
+A, 16:19
+C, 49:68
+D, 14:16, 19:49, 68:82
+E, 82:98

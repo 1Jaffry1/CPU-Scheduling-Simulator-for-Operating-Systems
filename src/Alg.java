@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 @SuppressWarnings("DuplicatedCode")
 public class Alg {
@@ -284,10 +282,8 @@ public class Alg {
                     completed.add(current);
                 }
 
-                if (current.times.contains(time))
-                    current.times.remove(time);
-                else
-                    current.times.add(time);
+                if (current.times.contains(time)) current.times.remove(time);
+                else current.times.add(time);
 
                 current.times.add(time + 1);
                 time++;
@@ -334,17 +330,24 @@ public class Alg {
 
 
     public static void roundRobin(ArrayList<Process> array, int quantum) {
+        String toPrint = "";
+        String toPrint2 = "";
         Methods.sortBy("arrival", array);
         ArrayList<Process> complete = new ArrayList<>();
-        ArrayList<Process> ready = new ArrayList<>();
+        ArrayDeque<Process> ready = new ArrayDeque<>();
+        Process justRan = null;
+        float totalTurnaroundTime = 0;
+        float totalWaitingTime = 0;
+        float totalResponseTime = 0;
+        float totalBurstTime = 0;
+
         Integer time = 0;
         int finished = 0;
         int arrayIndex = 0;
-        int circleIndex = 0;
 
         while (finished < array.size()) {
             if (!ready.isEmpty()) {
-                Process current = ready.get(circleIndex++ % ready.size());
+                Process current = ready.removeFirst();
                 if (current.getResponse() == -1) {
                     current.setResponse(time - current.getArrivalTime());
                     current.setStartTime(time);
@@ -354,30 +357,39 @@ public class Alg {
                 if (current.getRemainingBurstTime() < 1) {
                     if (current.times.contains(time))  //for adding time of turn start
                         current.times.remove(current.times.size() - 1);
-                    else
-                        current.times.add(time);//checks if process has ended
+                    else current.times.add(time);//checks if process has ended
                     time += quantum + current.getRemainingBurstTime();
                     current.setFinished(true);
                     current.setFinishTime(time);
                     current.setTurnaround(time - current.getArrivalTime());
-                    current.setWaiting(current.getTurnaround() - current.getResponse());
+                    current.setWaiting(current.getTurnaround() - current.getBurst());
                     finished++;
                     complete.add(current);
-                    ready.remove(current);
                     current.setRemainingBurstTime(0);
 
-                } else time += quantum;
+                    totalBurstTime+=current.getBurst();
+                    totalWaitingTime += current.getWaiting();
+                    totalResponseTime += current.getResponse();
+                    totalTurnaroundTime += current.getTurnaround();
 
-                if (!current.isFinished())
-                    if (current.times.contains(time - quantum))  //for adding time of turn start
-                        current.times.remove(current.times.size() - 1);
-                    else
-                        current.times.add(time - quantum);
+                } else {
+                    time += quantum;
+                    ready.addLast(current);
+                    justRan = current;
+                }
+
+                if (!current.isFinished()) if (current.times.contains(time - quantum))  //for adding time of turn start
+                    current.times.remove(current.times.size() - 1);
+                else current.times.add(time - quantum);
                 current.times.add(time); //adds time of turn end
             }
             if (arrayIndex < array.size()) //stop looking if all processes have been added. index reaching the end when wrong time breaks -> all processes added
                 while (array.get(arrayIndex).getArrivalTime() <= time) {
-                    ready.add(array.get(arrayIndex));
+                    if (!ready.isEmpty() && justRan != null && justRan.times.get(justRan.times.size()-1) == time.intValue()) {
+                        ready.remove(justRan);
+                        ready.addLast(array.get(arrayIndex));
+                        ready.addLast(justRan);
+                    } else ready.addLast(array.get(arrayIndex));
                     arrayIndex++;
                     if (arrayIndex == array.size()) break;
                 }
@@ -385,11 +397,25 @@ public class Alg {
                 time = array.get(arrayIndex).getArrivalTime();
             }
         }
-        for (Process i: complete){
-            System.out.print("\n"+i.getName()+" ");
-                    for (int j=0;j<i.times.size();j+=2)
-                        System.out.print(i.times.get(j)+ ":" + i.times.get(j+1)+" ");
+
+            float throughput = (float) array.size() / time;
+            float util = totalBurstTime / time * 100;
+            float averageWaitingTime = totalWaitingTime / array.size();
+            float averageTurnaroundTime = totalTurnaroundTime / array.size();
+            float averageResponseTime = totalResponseTime / array.size();
+
+        for (Process i : complete) {
+            toPrint += (i.getName());
+            toPrint2 += (i.getName());
+            for (int j = 0; j < i.times.size(); j += 2) {
+                toPrint += (", " + i.times.get(j) + ", " + i.times.get(j + 1));
+                toPrint2 += (", " + i.times.get(j) + ":" + i.times.get(j + 1));
+            }
+            toPrint += "\n";
+            toPrint2 += "\n";
         }
+        Methods.IO.writeToFile("RoundRobin", "Throughput: " + throughput + "\n" + "CPU Utilization: " + util + "%\n" + "Average Waiting Time: " + averageWaitingTime + "\n" + "Average Turnaround Time: " + averageTurnaroundTime + "\n" + "Average Response Time: " + averageResponseTime + "\n\n" + toPrint);
+        Methods.IO.writeToFile("RoundRobin_2", "Throughput: " + throughput + "\n" + "CPU Utilization: " + util + "%\n" + "Average Waiting Time: " + averageWaitingTime + "\n" + "Average Turnaround Time: " + averageTurnaroundTime + "\n" + "Average Response Time: " + averageResponseTime + "\n\n" + toPrint2);
     }
 
 }
