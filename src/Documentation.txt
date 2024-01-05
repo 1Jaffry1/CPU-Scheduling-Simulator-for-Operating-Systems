@@ -10,41 +10,34 @@ Classes:
 
     Process.java {
         This class holds the attributes and methods for a process that has been passed to the
-        operating system. It contains the following attributes:
+        operating system. It contains the following attributes and methods:
 
-            1. public static ArrayList<Process> allProcesses
+        Attributes (Process)
+
+            static ArrayList<Process> allProcesses
                - Description: A static ArrayList that stores each process that is added.
 
-            2. private String name
-               - Description: The name (ID) of the process.
-
-            3. public int[] attrs
+            int[] attrs
                - Description: An array holding the attributes based on which different algorithms
                  would want to sort the processes. The attributes are (arrivalTime, priority, remainingBurstTime).
 
-            4. private int arrivalTime
-               - Description: The arrival time of the process.
+            ArrayList<Integer> times:
+                -Holds the list of all times a process started or ended. An index which is even indicates a start time and
+                an index which is odd indicates a finish time.
 
-            5. private int priority
-               - Description: The priority of the process. Lower number indicates higher priority.
 
-            6. private int burst
-               - Description: The burst time of the process.
 
-            7. private int response
-               - Description: The response time of the process. i.e when the CPU is first given to the process.
+        Methods (Process) [not to be mistaken with Methods.java class]
 
-            8. private int waiting
-               - Description: The waiting time of the process. The total time the process spends waiting in the queue
-                to get the CPU.
+            Process():
+                constructor call method:
+                    1- Returns a Process, and sets it's remaining burst time equal to the initial burst
+                       time provided.
+                    2- Initializes (this.attrs) array for the process.
+                    3- Adds process to Process.allProcesses.
 
-            9. private int turnaround
-               - Description: The turnaround time of the process. 
+            void reset():
+                resets the temporary values so that the values are not reused
 
-            10. private boolean finished = false
-                - Description: A flag indicating whether the process has finished execution.
 
-            11. private int remainingBurstTime = burst
-                - Description: The remaining burst time of the process. Initialized to the initial burst time
-                  and updated during execution.
     }
