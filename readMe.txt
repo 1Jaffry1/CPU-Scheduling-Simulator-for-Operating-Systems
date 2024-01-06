@@ -1,5 +1,14 @@
 # Operating Systems Final Project - Scheduling Algorithms
 
+This Project Simulates CPU scheduling algorithms. It contains:
+
+1 FCFS
+2 Shortest-Job-First
+3 Shortest-Remaining-Job-First
+4 Priority Sheduling
+5 Preemtive Priority Scheduling
+6 Round Robin
+
 CHECK GITHUB: 1Jaffry1
 
 **Student:** Sayyed Muhammad Jaffry : 220700016
@@ -7,13 +16,19 @@ CHECK GITHUB: 1Jaffry1
 *NOTE: No AI tool was used in the making of this project, apart from some autocomplete provided by the IDE.*
 --------------------------------------------------------------------
 
-**RUN:**
+**RUN**
+
 1. Edit 'src/list.txt' to your liking. The format is:
    [Process name] [arrival time] [priority] [burst time]
 
 2. Change the time quantum in 'src/main.java' in the implementation of Round Robin. Default value is 2.
 
 3. Run 'src/main.java'
+
+4. Output files will be created in '/src/Result/'
+
+NOTE: Result files will be overwritten after each update to 'list.txt'
+
 --------------------------------------------------------------------
 
 **Full Documentation - you can use "cmd/ctrl+f" to search for something if you're not sure where to look.**
