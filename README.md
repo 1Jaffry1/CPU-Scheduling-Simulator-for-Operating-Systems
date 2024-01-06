@@ -1,6 +1,4 @@
-**This Project Simulates CPU scheduling algorithms. It contains: 'FCFS', 'Shortest-Job-First', 'Shortest-Remaining-Job-First', 'Priority Sheduling', 'Preemtive Priority Scheduling', and 'Round Robin'.
-**
-
+This Project Simulates CPU scheduling algorithms. It contains: 'FCFS', 'Shortest-Job-First', 'Shortest-Remaining-Job-First', 'Priority Sheduling', 'Preemtive Priority Scheduling', and 'Round Robin'.
 
 
 **RUN:**
